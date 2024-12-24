@@ -1,0 +1,140 @@
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Input } from "../components";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../redux/slices/authSlice";
+import { LOG_IN } from "../constants/constants";
+
+const AdminLogin = () => {
+  const userData = useSelector((state) => state.root.auth.userData);
+
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const baseUrl = import.meta.env.VITE_SERVER_URI;
+
+  const submit = (data) => {
+    // console.log(data)
+    axios
+      .post(`${baseUrl}${LOG_IN}`, data)
+      .then(function (res) {
+        console.log(res);
+        dispatch(login(res.data?.data[0].user));
+        localStorage.setItem("token", res.data.data[0].token);
+        const redirect = res.data.data[0].user.role_name.toLowerCase();
+       
+        navigate(`/${redirect}/dashboard`);
+      })
+      .catch(function (error) {
+        console.log("Error Occured ",error);
+        setError(error.message);
+      });
+
+    reset();
+  };
+
+  useEffect(() => {
+    if (userData === null) {
+      localStorage.removeItem("token");
+      navigate("/admin/login");
+    }
+  }, [userData]);
+  return (
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-xl-4 col-lg-5 col-sm-6 col-12">
+          <form onSubmit={handleSubmit(submit)} className="my-5">
+            <div className="border border-dark rounded-2 p-4 mt-5">
+              <div className="login-form">
+                <Link to="#" className="mb-4 d-flex">
+                  <img
+                    src="/assets/images/logo-dark.svg"
+                    className="img-fluid login-logo"
+                    alt="Nyke Admin"
+                  />
+                </Link>
+                <h5 className="fw-light my-3"> Login with admin account.</h5>
+
+                <div className="row">
+                  {error && (
+                    <p className="text-danger text-center fs-5">{error}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Input
+                    type="email"
+                    label="Email"
+                    className="mt-2"
+                    {...register("email", { required: "Email is required" })}
+                  />
+
+                  {errors.email && (
+                    <p className="text-danger">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Input
+                    type="password"
+                    label="Password"
+                    className="mt-2"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must be at least 6 characters long",
+                      },
+                      maxLength: {
+                        value: 15,
+                        message: "Password must be at most 15 characters long",
+                      },
+                    })}
+                  />
+                  {errors.password && (
+                    <p className="text-danger">{errors.password.message}</p>
+                  )}
+                </div>
+
+                <div className="d-grid py-3 mt-4">
+                  <Button type="submit" className="btn btn-lg btn-primary pt-2">
+                    Login
+                  </Button>
+                </div>
+                <div className="text-center py-3">or Signup with</div>
+                <div className="d-flex gap-2 justify-content-center">
+                  <button type="submit" className="btn btn-outline-danger">
+                    <i className="bi bi-google"></i>
+                  </button>
+                  <button type="submit" className="btn btn-outline-info">
+                    <i className="bi bi-facebook"></i>
+                  </button>
+                </div>
+                <div className="text-center pt-4">
+                  <span>Don't have an account?</span>
+                  <Link
+                    to="/admin/signup"
+                    className="text-blue text-decoration-underline ms-2"
+                  >
+                    Signup
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminLogin;
