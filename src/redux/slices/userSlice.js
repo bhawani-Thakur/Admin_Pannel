@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { roles: [], users: [] };
+const initialState = { roles:[], users: [] };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    getRole: (state, action) => {
+    setRole: (state, action) => {
       state.roles = action.payload;  // Direct mutation
     },
     getAllUsers: (state, action) => {
@@ -15,5 +15,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { getRole, getAllUsers } = userSlice.actions;
+export const { setRole, getAllUsers } = userSlice.actions;
 export default userSlice.reducer;

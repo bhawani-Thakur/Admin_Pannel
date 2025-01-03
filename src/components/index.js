@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import Select from "./Select";
 import Table from "./comp/Table";
 import Sidebar from "./comp/Sidebar";
-import Authentication from "./comp/Authentication";
+import ProtectedRoute from "./comp/Authentication";
 import BreadCrumb from "./comp/BreadCrumb";
 import Header from "./Header";
 import SelectInput from "./comp/StatusSelect";
@@ -19,7 +19,7 @@ export {
   Select,
   Table,
   Sidebar,
-  Authentication,
+  ProtectedRoute,
   BreadCrumb,
   SelectInput,
   Loader,

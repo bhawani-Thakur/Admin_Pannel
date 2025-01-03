@@ -1,9 +1,9 @@
-import React from 'react';
-import {useLocation ,Link} from "react-router-dom"
+import React from "react";
+import { useLocation, Link } from "react-router-dom";
 
 const Breadcrumb = () => {
-  const {pathname} = useLocation();
-  
+  const { pathname } = useLocation();
+
   const urlSegments = pathname.split("/").filter((res) => res !== "");
   let breadcrumbTrail = "";
 
@@ -15,15 +15,16 @@ const Breadcrumb = () => {
     }
 
     return (
-      
-      <span  key={index}>
+      <span key={index}>
         {index !== 0 && " / "}
-        <Link href={breadcrumbTrail}>{segment === "admin" ? "Home" : segment}</Link>
+        <Link to={breadcrumbTrail.replace("Home", "")}>
+          {segment === "admin" ? "Home" : segment}
+        </Link>
       </span>
     );
   });
 
-  return <nav className='ms-5'>{breadcrumbs}</nav>;
+  return <nav className="my-5 ps-4">{breadcrumbs}</nav>;
 };
 
 export default Breadcrumb;

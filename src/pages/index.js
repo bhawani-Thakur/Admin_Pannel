@@ -6,16 +6,20 @@ import Analytics from "./Analytics";
 import Welcome from "./admin_pages/Welcome";
 import Dashboard from "./admin_pages/Dashboard";
 import EditUser from "./EditUser";
-import AddVendor from "./AddVendor";
+import AddUser from "./AddUser";
+import Businesses from "./Businesses";
+import AddBusiness from "./AddBusiness";
 
 export {
   AdminSignup,
   PageNotFound,
   AdminLogin,
   Users,
-  AddVendor,
+  AddUser,
   Analytics,
   Welcome,
   Dashboard,
   EditUser,
+  Businesses,
+  AddBusiness,
 };

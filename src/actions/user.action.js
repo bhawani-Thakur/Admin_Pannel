@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ALL_ROLES, ALL_USER ,UPDATE_STATUS } from "../constants/constants";
+import { ALL_ROLES, ALL_USER, UPDATE_STATUS } from "../constants/constants";
 
 const token = localStorage.getItem("token");
 async function getAllRolesApi() {
@@ -7,7 +7,7 @@ async function getAllRolesApi() {
   try {
     const response = await axios.get(baseUrl);
 
-    return response;
+    return response.data;
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch roles");

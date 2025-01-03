@@ -11,59 +11,67 @@ import {
   Users,
   EditUser,
   Dashboard,
-  AddVendor,
+  AddUser,
+  Businesses,
+  AddBusiness,
 } from "../pages";
 import AdminLayout from "../../AdminLayout";
+import { ProtectedRoute } from "../components";
 
-import { Authentication } from "../components";
-
-const authStatus = !!localStorage.getItem("token");
-
-export const router = createBrowserRouter(
+const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      {/* Admin Routes */}
+      {/* Redirect Root to Admin Login */}
       <Route path="/" element={<Navigate to="/admin/login" />} />
 
       <Route path="/admin">
-        {/* Login Route without Layout */}
+        {/* Unprotected Routes */}
         <Route
           path="login"
           element={
-            <Authentication redirectTo={"/admin/dashboard"}>
+            <ProtectedRoute isProtected={false}>
               <AdminLogin />
-            </Authentication>
+            </ProtectedRoute>
           }
         />
-        <Route path="signup" element={<AdminSignup />} />
+        <Route
+          path="signup"
+          element={
+            <ProtectedRoute isProtected={false}>
+              <AdminSignup />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Routes using Admin Layout */}
-
-        <Route element={<AdminLayout />}>
+        {/* Protected Routes */}
+        <Route
+          element={
+            <ProtectedRoute isProtected={true}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<Dashboard />} />
 
-          {/* Nested User Routes */}
+          {/* Nested Routes under Admin Layout */}
           <Route path="users">
             <Route path="" element={<Users />} />
             <Route path="edit-user/:userId" element={<EditUser />} />
-            <Route path="add-vendor" element={<AddVendor />} />
+            <Route path="add-user" element={<AddUser />} />
+          </Route>
+
+          {/* Nestes Routes for businesses */}
+          <Route path="businesses">
+            <Route path="" element={<Businesses />} />
+            <Route path="add-business" element={<AddBusiness />} />
           </Route>
         </Route>
       </Route>
 
-      {/* Catch-all route for unmatched paths */}
+      {/* Catch-all Route */}
       <Route path="*" element={<PageNotFound />} />
     </>
   )
 );
 
-{
-  /* <Route path="edit-user/:userid" element={<EditUser />} />
-   */
-}
-
-{
-  /* <Route path="user"/>
-          <Route path="add-vendor" element={<AddVendor />} />
-          <Route path="edit-user/:user" element={<EditUser />} /> */
-}
+export default router;

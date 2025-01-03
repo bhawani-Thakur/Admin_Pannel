@@ -66,9 +66,9 @@ function Sidebar({ userData }) {
             </li>
 
             <li>
-              <Link to="#!">
+              <Link to="/admin/businesses">
                 <i className="bi bi-columns-gap"></i>
-                <span className="menu-text">Add Vendors</span>
+                <span className="menu-text">Businesses</span>
               </Link>
             </li>
             <li className="treeview">

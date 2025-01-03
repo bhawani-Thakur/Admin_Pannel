@@ -12,6 +12,7 @@
 
 // export default Loader;
 import React, { useEffect, useState } from "react";
+// import "../../public/assets/css/componentcss/loader.css";
 
 export default function Loader({ start }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -22,7 +23,7 @@ export default function Loader({ start }) {
 
       const timer = setTimeout(() => {
         setIsVisible(false); // Hide the loader after 3 seconds
-      }, 2000);
+      }, 3000);
 
       return () => clearTimeout(timer); // Cleanup the timer when component unmounts
     } else {

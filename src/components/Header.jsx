@@ -128,7 +128,7 @@ function Header() {
               />
             </Link>
           )}
-          <div className="dropdown-menu dropdown-menu-end shadow">
+           <div className="dropdown-menu dropdown-menu-end shadow">
             <Link className="dropdown-item d-flex align-items-center" to="#">
               <i className="bi bi-person fs-4 me-2"></i>Profile
             </Link>
@@ -146,7 +146,8 @@ function Header() {
               <i className="bi bi-escape fs-4 me-2"></i>
               Logout
             </Link>
-          </div>
+          </div> 
+          
         </div>
       </div>
       {/* <!-- App header actions end --> */}

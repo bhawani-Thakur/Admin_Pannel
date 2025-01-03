@@ -12182,7 +12182,6 @@ a:hover {
     left: 190px;
     top: 15px;
     z-index: 10;
-    /* z-index: -1; */
     background: #00368e;
     color: #fff;
   }

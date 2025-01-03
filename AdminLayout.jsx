@@ -1,5 +1,5 @@
 import React from "react";
-import { Header, Footer, Sidebar,BreadCrumb } from "./src/components";
+import { Header, Footer, Sidebar, BreadCrumb } from "./src/components";
 import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 

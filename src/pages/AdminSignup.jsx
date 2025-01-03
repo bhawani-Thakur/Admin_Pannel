@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, Select } from "../components";
 import { getAllRolesApi } from "../actions/user.action";
 import { useDispatch, useSelector } from "react-redux";
-import { getRole } from "../redux/slices/userSlice";
+import { setRole } from "../redux/slices/userSlice";
 import { setUserId } from "../redux/slices/registrationSlice";
 import { SIGN_UP } from "../constants/constants";
 
@@ -41,10 +41,10 @@ const AdminSignup = () => {
     reset();
   };
 
-  useEffect(() => {
-    // console.log("useEffect Run ", Date.now());
-    getAllRolesApi().then((res) => dispatch(getRole(res.data.data)));
-  }, []);
+  // useEffect(() => {
+  //   // console.log("useEffect Run ", Date.now());
+  //   getAllRolesApi().then((res) => dispatch(setRole(res.data.data)));
+  // }, []);
   return (
     <div className="container">
       <div className="row justify-content-center">
@@ -162,7 +162,6 @@ const AdminSignup = () => {
                 </div>
 
                 <div className="mb-2">
-                 
                   {/* <Select
                     label="Role"
                     className="mb-5"

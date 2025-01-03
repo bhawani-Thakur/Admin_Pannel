@@ -1,32 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
-import { Input, Button, Select, SelectInput, Loader } from "../components";
-import { useSelector } from "react-redux";
-import axios from "axios";
+import { useParams } from "react-router-dom";
+import { Input, Button, SelectInput, Loader, Select } from "../components";
+import { useSelector, useDispatch } from "react-redux";
 import { UPDATE_USER_DETAILS } from "../constants/constants";
+import { getAllRolesApi } from "../actions/user.action";
+import { setRole } from "../redux/slices/userSlice";
+import { handleFormSubmit } from "../utils/apiHelper";
 
 function EditUser() {
-  const location = useLocation();
-  const roles = useSelector((state) => state.root.user.roles); // Get roles from Redux
-  const { user } = location.state || {};
-  const token = localStorage.getItem("token");
+  const { userId } = useParams();
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.root.user.users);
+  // console.log(users)
+  const roles = useSelector((state) => state.root.user.roles[0]);
 
+  const user = users?.find((user) => user._id === userId);
+  const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  console.log("EDIT USER ", user);
-  // Initialize form with default values
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
+    getValues,
   } = useForm({
     defaultValues: user,
   });
 
   useEffect(() => {
+    getAllRolesApi().then((res) =>
+      dispatch(() => {
+        setRole(res.data);
+      })
+    );
     // Only reset if user data is available
     if (user) {
       reset(user);
@@ -35,28 +44,26 @@ function EditUser() {
 
   const submit = (data) => {
     setLoading(true);
-    setTimeout(() => {
-      console.log("Submit", data);
-      const baseUrl = `${
-        import.meta.env.VITE_SERVER_URI
-      }${UPDATE_USER_DETAILS}`;
-      axios
-        .post(baseUrl, data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setError(err.message);
-        })
-        .finally(() => setLoading(false));
-    }, 3000);
+    const loaderTimeout = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000);
+    });
+    delete data._id;
+
+    const userData = { id: userId, fieldsToUpdate: data };
+    console.log(userData);
+    const baseUrl = `${import.meta.env.VITE_SERVER_URI}${UPDATE_USER_DETAILS}`;
+
+    const backendCall = handleFormSubmit(baseUrl, userData, token, "POST")
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+
+    // Run both promise in parallel.
+    Promise.all([loaderTimeout, backendCall]).finally(() => setLoading(false));
   };
+
+  reset();
 
   return (
     <>
@@ -70,7 +77,7 @@ function EditUser() {
               {error && <p className="text-danger text-center fs-4">{error}</p>}
               <form onSubmit={handleSubmit(submit)}>
                 <div className="row">
-                  <h6 className="fw-semibold">  Information</h6>
+                  <h6 className="fw-semibold"> Information</h6>
                 </div>
                 <hr className="my-1" />
                 <div className="row">
@@ -78,34 +85,40 @@ function EditUser() {
                     <div className="input-group mb-1">
                       <Input
                         type="text"
-                        label="First Name"
+                        label="Name"
                         aria-label="name"
                         aria-describedby="basic-addon1"
                         {...register("name", {
                           required: "Name is required",
                         })}
                       />
-                      {errors.name && (
-                        <p className="text-danger"> * {errors.name.message}</p>
+                      {errors.first_name && (
+                        <p className="text-danger">
+                          {" "}
+                          * {errors.first_name.message}
+                        </p>
                       )}
                     </div>
                   </div>
-                  <div className="col-md-3 col-sm-12">
+                  {/* <div className="col-md-3 col-sm-12">
                     <div className="input-group mb-1">
                       <Input
                         type="text"
                         label="Last Name"
                         aria-label="name"
                         aria-describedby="basic-addon1"
-                        {...register("name", {
-                          required: "Name is required",
+                        {...register("last_name", {
+                          required: "Last Name is required",
                         })}
                       />
-                      {errors.name && (
-                        <p className="text-danger"> * {errors.name.message}</p>
+                      {errors.last_name && (
+                        <p className="text-danger">
+                          {" "}
+                          * {errors.last_name.message}
+                        </p>
                       )}
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-md-3 col-sm-12">
                     <div className=" input-group mb-1">
                       <Input
@@ -132,11 +145,11 @@ function EditUser() {
                         type="email"
                         className="form-control"
                         label="Email"
-                        style={{
-                          cursor: "not-allowed",
-                          backgroundColor: "#f5f5f5",
-                        }}
-                        disabled={true}
+                        // style={{
+                        //   cursor: "not-allowed",
+                        //   backgroundColor: "#f5f5f5",
+                        // }}
+                        // disabled={true}
                         {...register("email", {
                           required: "Email is required",
                         })}
@@ -148,10 +161,7 @@ function EditUser() {
                   </div>
                 </div>
 
-                <div className="row">
-                  <h6 className="my-1 fw-semibold">Document Upload</h6>
-                </div>
-                <hr className="my-1" />
+                {/* <hr className="my-1" />
                 <div className="row">
                   <div className="col-md-3 col-sm-12">
                     <div className=" input-group mb-1">
@@ -175,8 +185,8 @@ function EditUser() {
                           },
                         })}
                       />
-                      {errors.image && (
-                        <p className="text-danger"> *{errors.image.message}</p>
+                      {errors.aadhar && (
+                        <p className="text-danger"> *{errors.aadhar.message}</p>
                       )}
                     </div>
                   </div>
@@ -201,8 +211,8 @@ function EditUser() {
                           },
                         })}
                       />
-                      {errors.image && (
-                        <p className="text-danger"> * {errors.image.message}</p>
+                      {errors.pan && (
+                        <p className="text-danger"> * {errors.pan.message}</p>
                       )}
                     </div>
                   </div>
@@ -228,28 +238,26 @@ function EditUser() {
                           },
                         })}
                       />
-                      {errors.image && (
-                        <p className="text-danger"> * {errors.image.message}</p>
+                      {errors.gst && (
+                        <p className="text-danger"> * {errors.gst.message}</p>
                       )}
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* select boxes */}
                 <div className="row">
                   <h6 className="my-1 fw-semibold">Additionals</h6>
                 </div>
-                <hr className="my-1" />
+                {/* {/* <hr className="my-1" /> */}
                 <div className="row">
                   <div className="col-md-3 col-sm-12">
                     <div className="input-group mb-1">
                       <Select
                         className=""
                         label="Role"
-                        options={roles[0]}
+                        options={roles}
                         {...register("role_name", {
                           required: "Role is required",
-                          validate: (value) =>
-                            value !== "null" || "Please select a valid option",
                         })}
                       ></Select>
 

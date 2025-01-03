@@ -8,19 +8,10 @@ import { useNavigate, Link } from "react-router-dom";
 function Users() {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.root.user.users);
-  // console.log("From Backend" , users)
-  const token = localStorage.getItem("token");
-  const userData = useSelector((state) => state.root.auth.userData);
   const navigate = useNavigate();
   const [statusChanged, setStatusChanged] = useState(false); // Track status change
   const [modalopen, setModalopen] = useState(false);
   const [data, setData] = useState({ id: "", value: "" });
-
-  const handleSelectChange = (id, status) => {
-    updateUserStatusApi(id, status)
-      .then(() => setStatusChanged((prev) => !prev))
-      .catch((err) => console.log(err));
-  };
 
   const columns = [
     {
@@ -37,7 +28,11 @@ function Users() {
       accessorKey: "",
       cell: ({ row }) => {
         const status = row.original.status;
-
+        const handleSelectChange = (id, status) => {
+          updateUserStatusApi(id, status)
+            .then(() => setStatusChanged((prev) => !prev))
+            .catch((err) => console.log(err));
+        };
         return (
           <SelectInput
             value={status}
@@ -48,7 +43,7 @@ function Users() {
           />
         );
       },
-    },
+    }, // Working Fine
 
     {
       header: "Actions",
@@ -58,11 +53,11 @@ function Users() {
           <div className="d-flex gap-2">
             <Link
               className="btn btn-info btn-sm"
-              onClick={() =>
+              onClick={() => {
                 navigate(`edit-user/${row.original._id}`, {
-                  state: { user: row.original },
-                })
-              }
+                  state: { hello: "asaa" },
+                });
+              }}
             >
               <i className="bi bi-pencil"></i>
             </Link>
@@ -78,13 +73,15 @@ function Users() {
     },
   ];
 
+  // Used Inside Modal OnChange to get Value.
   const getstatus = (status) => {
-    setModalopen(false);
-
     if (status) {
       updateUserStatusApi(data.id, data.value).then(() => {
         setStatusChanged((prev) => !prev); // Toggle statusChanged
+        setModalopen(false); // Close modal after status update
       });
+    } else {
+      setModalopen(false); // Close modal if user cancels
     }
   };
   // Handle status change
@@ -94,15 +91,11 @@ function Users() {
   };
 
   useEffect(() => {
-    // console.log("UseEffect run ", Date.now());
-    if (userData === null) {
-      navigate("/admin/login");
-    }
-    getAllUserApi().then((res) => {
-      dispatch(getAllUsers(res.data.data));
-      console.log(res.data.data);
-    });
-  }, [userData, statusChanged]);
+    getAllUserApi()
+      .then((res) => dispatch(getAllUsers(res.data.data)))
+      .catch((err) => console.log(err));
+  }, [statusChanged, dispatch]);
+
   return (
     <>
       <Modal
@@ -112,58 +105,14 @@ function Users() {
       />
 
       <div className="mt-2 d-flex justify-content-end mx-5 px-4">
-        <Link to="add-vendor" className="btn btn-sm btn-primary fs-5">
-          Add vendors &nbsp; <i className="bi bi-person-plus-fill fs-5"></i>
+        <Link to="add-user" className="btn btn-sm btn-primary fs-5">
+          Add User &nbsp; <i className="bi bi-person-plus-fill fs-5"></i>
         </Link>
       </div>
+
       <Table data={users || []} columns={columns} />
     </>
   );
 }
 
 export default Users;
-
-// if (row.original.status === "pending") {
-//   return (
-//     <div className="d-flex gap-2">
-//       <button
-//         className="btn btn-success btn-sm"
-//         onClick={() => handleStatusChange(row.original._id, "active")}
-//       >
-//         <i title="approve" className="bi bi-check-circle"></i>
-//       </button>
-//       <button className="btn btn-danger btn-sm">
-//         {" "}
-//         <i
-//           title="reject"
-//           className="bi bi-x-circle"
-//           onClick={() =>
-//             handleStatusChange(row.original._id, "inactive")
-//           }
-//         ></i>
-//       </button>
-//     </div>
-//   );
-// } else if (row.original.status === "active") {
-//   return (
-//     <button className="btn btn-danger btn-sm">
-//       {" "}
-//       <i
-//         title="suspend"
-//         className="bi bi-x-circle"
-//         onClick={() => handleStatusChange(row.original._id, "inactive")}
-//       ></i>
-//     </button>
-//   );
-// } else {
-//   return (
-//     <button className="btn btn-success btn-sm">
-//       {" "}
-//       <i
-//         title="activate"
-//         className="bi bi-check-circle"
-//         onClick={() => handleStatusChange(row.original._id, "active")}
-//       ></i>
-//     </button>
-//   );
-// }

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input } from "../components";
+import { handleFormSubmit } from "../utils/apiHelper";
 
-function AddVendor() {
+function AddBusiness() {
+  const [error, setError] = useState("");
   const {
     register,
     handleSubmit,
@@ -10,21 +12,29 @@ function AddVendor() {
     formState: { errors },
   } = useForm();
 
+  const token = localStorage.getItem("token");
+
   const submit = (data) => {
     console.log("Submit", data);
+    const baseUrl = import.meta.env.VITE_SERVER_URI;
+    handleFormSubmit("", data, "POST", token)
+      .then((res) => console.log(res))
+      .catch((error) => setError(error.message));
 
     reset();
   };
+
   return (
     <>
       <div className="container">
         <div className="row text-center d-flex justify-content-center">
-          <h1 className="fw-bold m-3">Vendor Registration</h1>
+          <h1 className="fw-bold m-3">Resturant Registration</h1>
         </div>
         <div className="row d-flex justify-content-center">
           <div className="col my-1 shadow px-3 mb-5 rounded py-3" id="content">
             <div className="container">
               <form onSubmit={handleSubmit(submit)}>
+                {error && <p className="text-danger">{error}</p>}
                 <div className="row my-0 py-0">
                   <h5 className="fw-semibold">Company Contact Information</h5>
                 </div>
@@ -99,10 +109,7 @@ function AddVendor() {
                         })}
                       />
                       {errors.aadhar && (
-                        <p className="text-danger">
-                          {" "}
-                          * {errors.aadhar.message}
-                        </p>
+                        <p className="text-danger"> * {errors.email.message}</p>
                       )}
                     </div>
                   </div>
@@ -193,14 +200,12 @@ function AddVendor() {
                       <Input
                         type="text"
                         className="form-control"
-                        label="  Address Line 2"
-                        {...register(" _address", {
-                          required: "  address is required",
-                        })}
+                        label="Address Line 2"
+                        {...register("address_line2")}
                       />
-                      {errors._address && (
+                      {errors.address_line2 && (
                         <p className="text-danger">
-                          * {errors._address.message}
+                          * {errors.address_line2.message}
                         </p>
                       )}
                     </div>
@@ -234,7 +239,7 @@ function AddVendor() {
                         {...register("city", { required: "City is required" })}
                       />
                       {errors.city && (
-                        <p className="text-danger"> * {errors.city.message}</p>
+                        <p className="text-danger"> *{errors.city.message}</p>
                       )}
                     </div>
                   </div>
@@ -283,7 +288,7 @@ function AddVendor() {
                         type="file"
                         accept="image/*"
                         label="GST"
-                        {...register("gst", {
+                        {...register("gst_number", {
                           required: "GST is required",
                           validate: {
                             fileSize: (fileList) => {
@@ -298,8 +303,11 @@ function AddVendor() {
                           },
                         })}
                       />
-                      {errors.image && (
-                        <p className="text-danger"> * {errors.image.message}</p>
+                      {errors.gst_number && (
+                        <p className="text-danger">
+                          {" "}
+                          * {errors.gst_number.message}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -309,8 +317,8 @@ function AddVendor() {
                         type="file"
                         label="FSSAI"
                         accept="image/*"
-                        {...register("image", {
-                          required: "Image is required",
+                        {...register("fssai_license", {
+                          required: "FSSAI License is required",
                           validate: {
                             fileSize: (fileList) => {
                               if (!fileList || fileList.length === 0)
@@ -324,8 +332,11 @@ function AddVendor() {
                           },
                         })}
                       />
-                      {errors.image && (
-                        <p className="text-danger"> * {errors.image.message}</p>
+                      {errors.fssai_license && (
+                        <p className="text-danger">
+                          {" "}
+                          * {errors.fssai_license.message}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -350,8 +361,8 @@ function AddVendor() {
                           },
                         })}
                       />
-                      {errors.image && (
-                        <p className="text-danger"> * {errors.image.message}</p>
+                      {errors.pan && (
+                        <p className="text-danger"> * {errors.pan.message}</p>
                       )}
                     </div>
                   </div>
@@ -427,4 +438,4 @@ function AddVendor() {
   );
 }
 
-export default AddVendor;
+export default AddBusiness;

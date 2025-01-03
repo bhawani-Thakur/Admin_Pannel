@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Input } from "../components";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, Input, Loader } from "../components";
+import { useDispatch } from "react-redux";
 import { login } from "../redux/slices/authSlice";
 import { LOG_IN } from "../constants/constants";
+import { handleFormSubmit } from "../utils/apiHelper";
 
 const AdminLogin = () => {
-  const userData = useSelector((state) => state.root.auth.userData);
-
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -23,51 +22,62 @@ const AdminLogin = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URI;
 
   const submit = (data) => {
-    // console.log(data)
-    axios
-      .post(`${baseUrl}${LOG_IN}`, data)
+    setLoading(true); // Start the loader
+
+    // Simulate loader running for exactly 3 seconds, regardless of backend response
+    const loaderTimeout = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000); // 3 seconds loader timeout
+    });
+
+    // Backend call for login
+    const backendCall = handleFormSubmit(
+      `${baseUrl}${LOG_IN}`,
+      data,
+      null,
+      "POST"
+    )
       .then(function (res) {
-        console.log(res);
+        console.log("Response from backend ", res);
         dispatch(login(res.data?.data[0].user));
         localStorage.setItem("token", res.data.data[0].token);
         const redirect = res.data.data[0].user.role_name.toLowerCase();
-       
+
+        // After 3 seconds, redirect to the dashboard if response is successful.
         navigate(`/${redirect}/dashboard`);
       })
       .catch(function (error) {
-        console.log("Error Occured ",error);
-        setError(error.message);
+        console.log(error);
+        console.log("Error Occured ", error.response.data.message);
+        setError(error.response.data.message);
       });
 
+    // Wait for both the loader timeout and backend call to finish
+    Promise.all([loaderTimeout, backendCall]).finally(() => setLoading(false)); // Stop loading after both have completed
+
+    // Reset form or any other necessary state
     reset();
   };
 
-  useEffect(() => {
-    if (userData === null) {
-      localStorage.removeItem("token");
-      navigate("/admin/login");
-    }
-  }, [userData]);
   return (
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-xl-4 col-lg-5 col-sm-6 col-12">
-          <form onSubmit={handleSubmit(submit)} className="my-5">
+          <form noValidate onSubmit={handleSubmit(submit)} className="my-5">
             <div className="border border-dark rounded-2 p-4 mt-5">
               <div className="login-form">
-                <Link to="#" className="mb-4 d-flex">
+                {/* <Link to="#" className="mb-4 d-flex">
                   <img
                     src="/assets/images/logo-dark.svg"
                     className="img-fluid login-logo"
                     alt="Nyke Admin"
                   />
-                </Link>
+                </Link> */}
                 <h5 className="fw-light my-3"> Login with admin account.</h5>
 
                 <div className="row">
-                  {error && (
-                    <p className="text-danger text-center fs-5">{error}</p>
-                  )}
+                  {error && <p className="text-danger text-center">{error}</p>}
                 </div>
 
                 <div>
@@ -75,7 +85,18 @@ const AdminLogin = () => {
                     type="email"
                     label="Email"
                     className="mt-2"
-                    {...register("email", { required: "Email is required" })}
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value:
+                          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                        message: "Invalid email address",
+                      },
+                      maxLength: {
+                        value: 256,
+                        message: "Email address cannot exceed 256 characters",
+                      },
+                    })}
                   />
 
                   {errors.email && (
@@ -133,6 +154,7 @@ const AdminLogin = () => {
           </form>
         </div>
       </div>
+      <Loader start={loading} />
     </div>
   );
 };
