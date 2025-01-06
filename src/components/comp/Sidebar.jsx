@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Sidebar({ userData }) {
+function Sidebar({  }) {
   return (
     <div className="d-flex">
       <nav id="sidebar" className="sidebar-wrapper">
@@ -71,6 +71,13 @@ function Sidebar({ userData }) {
                 <span className="menu-text">Businesses</span>
               </Link>
             </li>
+            <li>
+              <Link to="/admin/packages">
+                <i className="bi bi-gift-fill"></i>
+                <span className="menu-text">Packages</span>
+              </Link>
+            </li>
+
             <li className="treeview">
               <Link to="#!">
                 <i className="bi bi-code-square"></i>

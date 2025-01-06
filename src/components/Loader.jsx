@@ -1,18 +1,5 @@
-// import React from "react";
-
-// const Loader = () => {
-//   return (
-//     <div className="d-flex justify-content-center">
-//       <div className="spinner-border" role="status">
-//         <span className="sr-only">Loading...</span>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Loader;
 import React, { useEffect, useState } from "react";
-// import "../../public/assets/css/componentcss/loader.css";
+import "./loader.css";
 
 export default function Loader({ start }) {
   const [isVisible, setIsVisible] = useState(false);

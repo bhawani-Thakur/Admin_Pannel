@@ -24,7 +24,11 @@ const Breadcrumb = () => {
     );
   });
 
-  return <nav className="my-5 ps-4">{breadcrumbs}</nav>;
+  return (
+    <div className="app-hero-header">
+      <nav className="fw-light fs-5 py-3">{breadcrumbs}</nav>
+    </div>
+  );
 };
 
 export default Breadcrumb;

@@ -9,9 +9,8 @@ import {
 } from "@tanstack/react-table";
 import { SelectInput } from "..";
 
-const Table = ({ data = [], columns }) => {
+const Table = ({ data = [], columns, filtering, setFiltering }) => {
   const [sorting, setSorting] = useState([]);
-  const [filtering, setFiltering] = useState("");
   const [pageSize, setPageSize] = useState(10);
 
   const table = useReactTable({
@@ -36,16 +35,6 @@ const Table = ({ data = [], columns }) => {
       <div className="col-md-11 mt-2">
         <div className="card shadow mb-4">
           <div className="card-body">
-            {/* Search Input */}
-            <input
-              type="text"
-              value={filtering}
-              placeholder="Search..."
-              className="form-control col-md-8 col-sm-12 mb-3"
-              style={{ marginBottom: "10px" }}
-              onChange={(e) => setFiltering(e.target.value)}
-            />
-
             <div className="table-responsive">
               <table className="table align-middle table-hover m-0">
                 <thead>

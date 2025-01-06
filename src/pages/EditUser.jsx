@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { Input, Button, SelectInput, Loader, Select } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { UPDATE_USER_DETAILS } from "../constants/constants";
@@ -9,13 +9,15 @@ import { setRole } from "../redux/slices/userSlice";
 import { handleFormSubmit } from "../utils/apiHelper";
 
 function EditUser() {
-  const { userId } = useParams();
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.root.user.users);
-  // console.log(users)
-  const roles = useSelector((state) => state.root.user.roles[0]);
+  const roles = useSelector((state) => state.root.user?.roles);
+  // console.log("This is roles ", roles);
+  const location = useLocation();
+  const { userId } = useParams();
+  const { user } = location.state || {};
 
-  const user = users?.find((user) => user._id === userId);
+  // console.log(user)
+
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -25,18 +27,17 @@ function EditUser() {
     handleSubmit,
     reset,
     formState: { errors },
-    getValues,
   } = useForm({
     defaultValues: user,
   });
 
   useEffect(() => {
-    getAllRolesApi().then((res) =>
-      dispatch(() => {
-        setRole(res.data);
-      })
-    );
-    // Only reset if user data is available
+    // Fetch roles and dispatch to Redux store
+    getAllRolesApi().then((res) => {
+      dispatch(setRole(res.data));
+    });
+
+    // Reset form when user data is available
     if (user) {
       reset(user);
     }
@@ -52,22 +53,27 @@ function EditUser() {
     delete data._id;
 
     const userData = { id: userId, fieldsToUpdate: data };
-    console.log(userData);
+
     const baseUrl = `${import.meta.env.VITE_SERVER_URI}${UPDATE_USER_DETAILS}`;
 
     const backendCall = handleFormSubmit(baseUrl, userData, token, "POST")
       .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .catch((err) => setError(err.response.data.message));
 
     // Run both promise in parallel.
     Promise.all([loaderTimeout, backendCall]).finally(() => setLoading(false));
+    reset();
   };
-
-  reset();
 
   return (
     <>
       <div className="container">
+        <div className="d-flex justify-content-end me-3">
+          <Link to="/admin/users" className="btn btn-sm btn-primary">
+            {" "}
+            Go Back
+          </Link>
+        </div>
         <div className="row text-center d-flex justify-content-center">
           <h1 className="fw-bold mt-2 text-capitalize">Edit User Form</h1>
         </div>
@@ -92,39 +98,18 @@ function EditUser() {
                           required: "Name is required",
                         })}
                       />
-                      {errors.first_name && (
-                        <p className="text-danger">
-                          {" "}
-                          * {errors.first_name.message}
-                        </p>
+                      {errors.name && (
+                        <p className="text-danger"> * {errors.name.message}</p>
                       )}
                     </div>
                   </div>
-                  {/* <div className="col-md-3 col-sm-12">
-                    <div className="input-group mb-1">
-                      <Input
-                        type="text"
-                        label="Last Name"
-                        aria-label="name"
-                        aria-describedby="basic-addon1"
-                        {...register("last_name", {
-                          required: "Last Name is required",
-                        })}
-                      />
-                      {errors.last_name && (
-                        <p className="text-danger">
-                          {" "}
-                          * {errors.last_name.message}
-                        </p>
-                      )}
-                    </div>
-                  </div> */}
+
                   <div className="col-md-3 col-sm-12">
                     <div className=" input-group mb-1">
                       <Input
                         type="text"
                         className="form-control"
-                        label="Phone Number"
+                        label="Mobile Number"
                         {...register("phone", {
                           required: "Phone is required",
                           maxLength: {
@@ -256,9 +241,6 @@ function EditUser() {
                         className=""
                         label="Role"
                         options={roles}
-                        {...register("role_name", {
-                          required: "Role is required",
-                        })}
                       ></Select>
 
                       {errors.role_name && (

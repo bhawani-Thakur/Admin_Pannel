@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input } from "../components";
+import { Button, Input, Select } from "../components";
 import { handleFormSubmit } from "../utils/apiHelper";
+import { useLocation } from "react-router-dom";
 
 function AddBusiness() {
   const [error, setError] = useState("");
+  const location = useLocation();
+  console.log("Location", location);
+  const { user } = location?.state || {};
+
+  console.log("User in Add Business", user);
   const {
     register,
     handleSubmit,
@@ -28,13 +34,16 @@ function AddBusiness() {
     <>
       <div className="container">
         <div className="row text-center d-flex justify-content-center">
-          <h1 className="fw-bold m-3">Resturant Registration</h1>
+          <h1 className="fw-bold m-3">
+            Add Business
+          </h1>
         </div>
         <div className="row d-flex justify-content-center">
           <div className="col my-1 shadow px-3 mb-5 rounded py-3" id="content">
             <div className="container">
               <form onSubmit={handleSubmit(submit)}>
                 {error && <p className="text-danger">{error}</p>}
+
                 <div className="row my-0 py-0">
                   <h5 className="fw-semibold">Company Contact Information</h5>
                 </div>

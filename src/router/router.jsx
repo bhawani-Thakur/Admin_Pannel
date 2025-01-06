@@ -14,6 +14,7 @@ import {
   AddUser,
   Businesses,
   AddBusiness,
+  Packages,
 } from "../pages";
 import AdminLayout from "../../AdminLayout";
 import { ProtectedRoute } from "../components";
@@ -65,6 +66,7 @@ const router = createBrowserRouter(
             <Route path="" element={<Businesses />} />
             <Route path="add-business" element={<AddBusiness />} />
           </Route>
+          <Route path="packages" element={<Packages />}></Route>
         </Route>
       </Route>
 

@@ -1,5 +1,5 @@
 import React from "react";
-// import "../../public/assets/css/componentcss/modal.css";
+import "./modal.css";
 const Modal = ({ display, title, description, getstatus }) => {
   return (
     <div

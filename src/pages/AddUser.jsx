@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Input, Button, Loader, Select } from "../components";
+import { Input, Button, Loader, Select, SelectInput } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { ADD_USER } from "../constants/constants";
 import { getAllRolesApi } from "../actions/user.action";
 import { setRole } from "../redux/slices/userSlice";
 import { handleFormSubmit } from "../utils/apiHelper";
+import { Link } from "react-router-dom";
 
 function AddUser() {
   const dispatch = useDispatch();
 
-  const roles = useSelector((state) => state.root.user.roles[0]);
+  const roles = useSelector((state) => state.root.user.roles);
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -53,6 +54,12 @@ function AddUser() {
       <div className="container">
         <div className="row text-center d-flex justify-content-center">
           <h1 className="fw-bold mt-2 text-capitalize"> ADD User Form</h1>
+        </div>
+        <div className="d-flex justify-content-end me-3">
+          <Link to="/admin/users" className="btn btn-sm btn-primary">
+            {" "}
+            Go Back
+          </Link>
         </div>
         <div className="row d-flex justify-content-center">
           <div className="col my-1 shadow p-3 mb-5 rounded" id="content">
@@ -153,13 +160,19 @@ function AddUser() {
                         })}
                       ></Select>
 
-                      {errors.role_name && (
-                        <p className="text-danger">
-                          {" "}
-                          * {errors.role_name.message}
-                        </p>
+                      {errors.role && (
+                        <p className="text-danger"> * {errors.role.message}</p>
                       )}
                     </div>
+                  </div>
+                  <div className="col-md-3 col-sm-12">
+                    <SelectInput
+                      label="Status"
+                      options={["active", "pending", "inactive"]}
+                      {...register("status", {
+                        required: "Status is required",
+                      })}
+                    ></SelectInput>
                   </div>
                 </div>
 
