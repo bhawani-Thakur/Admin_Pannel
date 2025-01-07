@@ -6,6 +6,8 @@ const UPDATE_STATUS = "/dashboard/updateuserstatus";
 const UPDATE_USER_DETAILS = "/dashboard/updateUserFields";
 const GET_BUSINESSES = "/business/getallbusiness";
 const ADD_USER = "/auth/signup";
+const ADD_BUSINESS = "/business/addbusiness";
+const UPADTE_BUSINESS_STATUS = "/business/changebusinessstatus";
 export {
   SIGN_UP,
   LOG_IN,
@@ -14,5 +16,7 @@ export {
   UPDATE_STATUS,
   UPDATE_USER_DETAILS,
   GET_BUSINESSES,
-  ADD_USER
+  ADD_BUSINESS,
+  ADD_USER,
+  UPADTE_BUSINESS_STATUS,
 };

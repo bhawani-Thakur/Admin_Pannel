@@ -5,20 +5,21 @@ import { handleFormSubmit } from "../utils/apiHelper";
 import { Link, useLocation } from "react-router-dom";
 import { ADD_BUSINESS } from "../constants/constants";
 
-function AddBusiness() {
+const EditBusiness = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-  const { user } = location?.state || {};
+  const { business } = location?.state || {};
+  console.log(business);
 
-  console.log("User in Add Business", user._id);
+  // console.log("User in Add Business", user._id);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues: business });
 
   const token = localStorage.getItem("token");
   // console.log("Token", token);
@@ -31,26 +32,26 @@ function AddBusiness() {
         resolve();
       }, 3000); // 3 seconds loader timeout
     });
-    const userData = { userid: user._id, ...data };
-
-    console.log("User Data", userData);
-
+    const businessData = { userid: business._id, ...data };
+    console.log("User Data", businessData);
     const baseUrl = `${import.meta.env.VITE_SERVER_URI}${ADD_BUSINESS}`;
-    const backendCall = handleFormSubmit(baseUrl, userData, token, "POST")
+    const backendCall = handleFormSubmit(baseUrl, businessData, token, "POST")
       .then((res) => console.log(res))
       .catch((error) => console.log(error));
     Promise.all([loaderTimeout, backendCall]).finally(() => setLoading(false));
-    // reset();
+    reset();
   };
 
   return (
     <>
       <div className="container">
         <div className="d-flex justify-content-end px-3">
-          <Link  to="/admin/businesses"className="btn btn-sm btn-primary">Back to Businesses</Link>
+          <Link to="/admin/businesses" className="btn btn-sm btn-primary">
+            Back to Businesses
+          </Link>
         </div>
         <div className="row text-center d-flex justify-content-center">
-          <h1 className="fw-bold m-3">Add Business</h1>
+          <h1 className="fw-bold m-3">Edit Business</h1>
         </div>
         <div className="row d-flex justify-content-center">
           <div className="col my-1 shadow px-3 mb-5 rounded py-3" id="content">
@@ -174,6 +175,8 @@ function AddBusiness() {
                     </div>
                   </div>
                 </div>
+
+                {/* For Document Details  */}
                 {/* <div className="row my-0 py-0">
                   <h5 className="fw-semibold">Documents</h5>
                 </div>
@@ -494,13 +497,6 @@ function AddBusiness() {
       {/* <Toaster position="top-center" reverseOrder={false} /> */}
     </>
   );
-}
+};
 
-export default AddBusiness;
-
-{
-  /* <div class="m-0">
-  <label class="form-label">Textarea</label>
-  <textarea class="form-control" rows="3"></textarea>
-</div>; */
-}
+export default EditBusiness;

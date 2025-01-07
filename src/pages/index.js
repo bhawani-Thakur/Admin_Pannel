@@ -10,6 +10,7 @@ import AddUser from "./AddUser";
 import Businesses from "./Businesses";
 import AddBusiness from "./AddBusiness";
 import Packages from "./Packages";
+import EditBusiness from "./EditBusiness";
 
 export {
   AdminSignup,
@@ -24,4 +25,5 @@ export {
   Businesses,
   AddBusiness,
   Packages,
+  EditBusiness,
 };

@@ -9,9 +9,15 @@ import {
 } from "@tanstack/react-table";
 import { SelectInput } from "..";
 
-const Table = ({ data = [], columns, filtering, setFiltering }) => {
+const Table = ({
+  data = [],
+  columns,
+  filtering,
+  setFiltering,
+  pageSize,
+  setPageSize,
+}) => {
   const [sorting, setSorting] = useState([]);
-  const [pageSize, setPageSize] = useState(10);
 
   const table = useReactTable({
     data,
@@ -68,18 +74,29 @@ const Table = ({ data = [], columns, filtering, setFiltering }) => {
                   ))}
                 </thead>
                 <tbody>
-                  {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
+                  {table.getRowModel().rows.length > 0 ? (
+                    table.getRowModel().rows.map((row) => (
+                      <tr key={row.id}>
+                        {row.getVisibleCells().map((cell) => (
+                          <td key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="text-center fs-5 text-danger"
+                        colSpan={columns.length}
+                      >
+                        No data to show
+                      </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
 
@@ -134,7 +151,7 @@ const Table = ({ data = [], columns, filtering, setFiltering }) => {
                     <SelectInput
                       className="form-select"
                       label="Enteries per Page"
-                      options={[1, 2, 5, 10, 15]}
+                      options={[2, 10, 15, 25, 50, 100]}
                       value={pageSize}
                       onChange={(e) => {
                         setPageSize(Number(e.target.value));

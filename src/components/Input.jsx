@@ -4,7 +4,9 @@ function Input({ label, type = "text", className = "", ...props }, ref) {
   const id = useId();
   return (
     <div className="mb-3 w-100">
-      <label className="form-label">{label}</label>
+      <label className="form-label">
+        {label}
+      </label>
       <input
         type={type}
         className={`form-control ${className}`}

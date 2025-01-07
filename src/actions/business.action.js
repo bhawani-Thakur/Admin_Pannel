@@ -1,4 +1,4 @@
-import { GET_BUSINESSES } from "../constants/constants";
+import { GET_BUSINESSES, UPADTE_BUSINESS_STATUS } from "../constants/constants";
 import axios from "axios";
 
 const token = localStorage.getItem("token");
@@ -8,11 +8,27 @@ async function getAllBusinessApi() {
     const response = await axios.get(baseUrl, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(response.data);
+    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
-export { getAllBusinessApi };
+
+async function updateBusinessStatusApi(id, status) {
+  const baseUrl = `${import.meta.env.VITE_SERVER_URI}${UPADTE_BUSINESS_STATUS}`;
+  const data = { id, status };
+  try {
+    const res = await axios.put(baseUrl, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error) {
+    throw error;
+    // throw new Error("Failed to update Business Status", error);
+  }
+}
+export { getAllBusinessApi, updateBusinessStatusApi };

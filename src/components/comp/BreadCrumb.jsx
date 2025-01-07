@@ -25,8 +25,8 @@ const Breadcrumb = () => {
   });
 
   return (
-    <div className="app-hero-header">
-      <nav className="fw-light fs-5 py-3">{breadcrumbs}</nav>
+    <div className="mx-3">
+      <nav className="fw-light fs-5 py-3 px-3">{breadcrumbs}</nav>
     </div>
   );
 };

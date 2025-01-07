@@ -15,11 +15,12 @@ const Packages = () => {
 
   const submit = (data) => {
     console.log("submit", data);
+    //  Make an Axios Call and create a package.
   };
   return (
     <div>
       <div className="row">
-        <h1 className="text-center my-3">Packages</h1>
+        <h1 className="text-center my-3"> Add Packages</h1>
       </div>
       <div className="row">
         <hr />
@@ -106,15 +107,7 @@ const Packages = () => {
               </div>
             </form>
 
-            <div className="row">
-              <ul class="list-group">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-                <li class="list-group-item">A fourth item</li>
-                <li class="list-group-item">And a fifth one</li>
-              </ul>
-            </div>
+            <div className="row"></div>
           </div>
         </div>
       </div>

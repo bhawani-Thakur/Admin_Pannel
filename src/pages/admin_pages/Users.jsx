@@ -3,7 +3,7 @@ import { Modal, SelectInput, Table } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUserApi, updateUserStatusApi } from "../../actions/user.action";
 import { getAllUsers } from "../../redux/slices/userSlice";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Users() {
   const dispatch = useDispatch();
@@ -13,6 +13,7 @@ function Users() {
   const [modalopen, setModalopen] = useState(false);
   const [data, setData] = useState({ id: "", value: "" });
   const [filtering, setFiltering] = useState("");
+  const [pageSize, setPageSize] = useState(10);
 
   const columns = [
     {
@@ -131,15 +132,17 @@ function Users() {
       </div>
 
       {/* Search Input */}
-      <div className=" mx-5 mt-2">
-        <input
-          type="text"
-          value={filtering}
-          placeholder="Search..."
-          className="form-control col-md-8 col-sm-12 mb-3"
-          style={{ marginBottom: "10px" }}
-          onChange={(e) => setFiltering(e.target.value)}
-        />
+      <div className="row mt-4 mx-5 px-3 d-flex justify-content-end">
+        <div className="col-md-4 col-sm-12">
+          <input
+            type="text"
+            value={filtering}
+            placeholder="Search..."
+            className="form-control col-md-8 col-sm-12 mb-3"
+            style={{ marginBottom: "10px" }}
+            onChange={(e) => setFiltering(e.target.value)}
+          />
+        </div>
       </div>
 
       <Table
@@ -147,6 +150,8 @@ function Users() {
         columns={columns}
         filtering={filtering}
         setFiltering={setFiltering}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
       />
     </>
   );

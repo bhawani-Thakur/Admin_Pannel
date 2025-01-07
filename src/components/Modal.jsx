@@ -3,7 +3,7 @@ import "./modal.css";
 const Modal = ({ display, title, description, getstatus }) => {
   return (
     <div
-      className={`modal-container d-flex justify-content-center align-items ${
+      className={` border modal-container d-flex justify-content-center align-items ${
         display ? "d-block" : "d-none"
       }`}
     >
@@ -25,7 +25,7 @@ const Modal = ({ display, title, description, getstatus }) => {
                 getstatus(true);
               }}
             >
-              <strong>Yes, enable</strong>
+            <strong>Yes, enable</strong>
             </button>
             <button
               type="button"
