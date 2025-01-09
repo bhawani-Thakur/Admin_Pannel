@@ -12,8 +12,8 @@ import { SelectInput } from "..";
 const Table = ({
   data = [],
   columns,
-  filtering,
-  setFiltering,
+  globalFiltering,
+  setGlobalFiltering,
   pageSize,
   setPageSize,
 }) => {
@@ -28,12 +28,12 @@ const Table = ({
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting: sorting,
-      globalFilter: filtering,
+      globalFilter: globalFiltering,
       pageSize,
     },
 
     onSortingChange: setSorting,
-    onGlobalFilterChange: setFiltering,
+    onGlobalFilterChange: setGlobalFiltering,
   });
 
   return (
@@ -57,16 +57,10 @@ const Table = ({
                           )}
                           {/* Sorting Icons */}
                           {header.column.getIsSorted() === "asc" && (
-                            <i
-                              className="bi bi-caret-up-fill"
-                              aria-hidden="true"
-                            ></i>
+                            <i className="bi bi-sort-alpha-up ms-1 fs-5 fw-2"></i>
                           )}
                           {header.column.getIsSorted() === "desc" && (
-                            <i
-                              className="bi bi-caret-down-fill"
-                              aria-hidden="true"
-                            ></i>
+                            <i className="bi bi-sort-alpha-down-alt ms-1 fs-5"></i>
                           )}
                         </th>
                       ))}

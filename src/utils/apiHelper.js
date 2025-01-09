@@ -6,9 +6,7 @@ export const handleFormSubmit = async (
   token = null,
   method = "GET"
 ) => {
-  const headers = {
-    "Content-Type": "application/json",
-  };
+  const headers = {};
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;

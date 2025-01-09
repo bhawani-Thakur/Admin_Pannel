@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input, Select } from "../components";
+import { Button, Input, Loader, Select } from "../components";
 import { handleFormSubmit } from "../utils/apiHelper";
 import { Link, useLocation } from "react-router-dom";
 import { ADD_BUSINESS } from "../constants/constants";
@@ -10,7 +10,7 @@ const EditBusiness = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const { business } = location?.state || {};
-  console.log(business);
+  console.log("THE Business", business);
 
   // console.log("User in Add Business", user._id);
 
@@ -37,9 +37,12 @@ const EditBusiness = () => {
     const baseUrl = `${import.meta.env.VITE_SERVER_URI}${ADD_BUSINESS}`;
     const backendCall = handleFormSubmit(baseUrl, businessData, token, "POST")
       .then((res) => console.log(res))
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setError(error.response.data.message);
+        console.log(error);
+      });
     Promise.all([loaderTimeout, backendCall]).finally(() => setLoading(false));
-    reset();
+    // reset();
   };
 
   return (
@@ -108,7 +111,7 @@ const EditBusiness = () => {
                       <textarea
                         className="form-control"
                         rows="3"
-                        {...register("decription", {
+                        {...register("description", {
                           required: "Description is required",
                         })}
                       ></textarea>
@@ -351,8 +354,7 @@ const EditBusiness = () => {
                         type="file"
                         accept="image/*"
                         label="GST"
-                        {...register("gst_number", {
-                          required: "GST is required",
+                        {...register("gst", {
                           validate: {
                             fileSize: (fileList) => {
                               if (!fileList || fileList.length === 0)
@@ -380,8 +382,7 @@ const EditBusiness = () => {
                         type="file"
                         label="FSSAI"
                         accept="image/*"
-                        {...register("fssai_license", {
-                          required: "FSSAI License is required",
+                        {...register("fssai", {
                           validate: {
                             fileSize: (fileList) => {
                               if (!fileList || fileList.length === 0)
@@ -409,8 +410,7 @@ const EditBusiness = () => {
                         type="file"
                         accept="image/*"
                         label="PAN"
-                        {...register("pan", {
-                          required: "PAN is required",
+                        {...register("pancard", {
                           validate: {
                             fileSize: (fileList) => {
                               if (!fileList || fileList.length === 0)
@@ -493,8 +493,8 @@ const EditBusiness = () => {
             </div>
           </div>
         </div>
+        <Loader start={loading} />
       </div>
-      {/* <Toaster position="top-center" reverseOrder={false} /> */}
     </>
   );
 };

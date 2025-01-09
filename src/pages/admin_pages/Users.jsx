@@ -12,7 +12,8 @@ function Users() {
   const [statusChanged, setStatusChanged] = useState(false); // Track status  and fetch updates change
   const [modalopen, setModalopen] = useState(false);
   const [data, setData] = useState({ id: "", value: "" });
-  const [filtering, setFiltering] = useState("");
+  const [globalFiltering, setGlobalFiltering] = useState("");
+  const [filter, setFilter] = useState([]);
   const [pageSize, setPageSize] = useState(10);
 
   const columns = [
@@ -136,11 +137,11 @@ function Users() {
         <div className="col-md-4 col-sm-12">
           <input
             type="text"
-            value={filtering}
+            value={globalFiltering}
             placeholder="Search..."
             className="form-control col-md-8 col-sm-12 mb-3"
             style={{ marginBottom: "10px" }}
-            onChange={(e) => setFiltering(e.target.value)}
+            onChange={(e) => setGlobalFiltering(e.target.value)}
           />
         </div>
       </div>
@@ -148,8 +149,8 @@ function Users() {
       <Table
         data={users || []}
         columns={columns}
-        filtering={filtering}
-        setFiltering={setFiltering}
+        globalFiltering={globalFiltering}
+        setGlobaLFiltering={setGlobalFiltering}
         pageSize={pageSize}
         setPageSize={setPageSize}
       />

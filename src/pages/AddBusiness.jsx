@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input, Select } from "../components";
+import { Button, Input, Loader, Select } from "../components";
 import { handleFormSubmit } from "../utils/apiHelper";
 import { Link, useLocation } from "react-router-dom";
 import { ADD_BUSINESS } from "../constants/constants";
@@ -11,7 +11,7 @@ function AddBusiness() {
   const location = useLocation();
   const { user } = location?.state || {};
 
-  console.log("User in Add Business", user._id);
+  // console.log("User in Add Business", user._id);
 
   const {
     register,
@@ -21,34 +21,51 @@ function AddBusiness() {
   } = useForm();
 
   const token = localStorage.getItem("token");
-  // console.log("Token", token);
-
+  
   const submit = (data) => {
     setLoading(true);
-    console.log("Data", data);
     const loaderTimeout = new Promise((resolve) => {
       setTimeout(() => {
         resolve();
       }, 3000); // 3 seconds loader timeout
     });
-    const userData = { userid: user._id, ...data };
 
-    console.log("User Data", userData);
+    const formData = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+      if (value instanceof FileList) {
+        // If the field is a FileList (like from a file input), append the first file
+        formData.append(key, value[0]); // Assuming a single file is uploaded
+      } else {
+        // For other fields, append the value directly
+        formData.append(key, value);
+      }
+    });
+
+    formData.append("userid", user._id);
 
     const baseUrl = `${import.meta.env.VITE_SERVER_URI}${ADD_BUSINESS}`;
-    const backendCall = handleFormSubmit(baseUrl, userData, token, "POST")
+    const backendCall = handleFormSubmit(baseUrl, formData, token, "POST")
       .then((res) => console.log(res))
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setError(error.response.data.message);
+      });
+
     Promise.all([loaderTimeout, backendCall]).finally(() => setLoading(false));
-    // reset();
+    reset();
   };
 
   return (
     <>
       <div className="container">
         <div className="d-flex justify-content-end px-3">
-          <Link  to="/admin/businesses"className="btn btn-sm btn-primary">Back to Businesses</Link>
+          <Link to="/admin/businesses" className="btn btn-sm btn-primary">
+            Back to Businesses
+          </Link>
         </div>
+
         <div className="row text-center d-flex justify-content-center">
           <h1 className="fw-bold m-3">Add Business</h1>
         </div>
@@ -56,7 +73,9 @@ function AddBusiness() {
           <div className="col my-1 shadow px-3 mb-5 rounded py-3" id="content">
             <div className="container">
               <form onSubmit={handleSubmit(submit)}>
-                {error && <p className="text-danger">{error}</p>}
+                {error && (
+                  <p className="text-danger text-center fs-4">{error}</p>
+                )}
 
                 <div className="row my-0 py-0">
                   <h5 className="fw-semibold">Company Contact Information</h5>
@@ -107,7 +126,7 @@ function AddBusiness() {
                       <textarea
                         className="form-control"
                         rows="3"
-                        {...register("decription", {
+                        {...register("description", {
                           required: "Description is required",
                         })}
                       ></textarea>
@@ -348,7 +367,7 @@ function AddBusiness() {
                         type="file"
                         accept="image/*"
                         label="GST"
-                        {...register("gst_number", {
+                        {...register("gst", {
                           required: "GST is required",
                           validate: {
                             fileSize: (fileList) => {
@@ -363,11 +382,8 @@ function AddBusiness() {
                           },
                         })}
                       />
-                      {errors.gst_number && (
-                        <p className="text-danger">
-                          {" "}
-                          * {errors.gst_number.message}
-                        </p>
+                      {errors.gst && (
+                        <p className="text-danger"> * {errors.gst.message}</p>
                       )}
                     </div>
                   </div>
@@ -377,7 +393,7 @@ function AddBusiness() {
                         type="file"
                         label="FSSAI"
                         accept="image/*"
-                        {...register("fssai_license", {
+                        {...register("fssai", {
                           required: "FSSAI License is required",
                           validate: {
                             fileSize: (fileList) => {
@@ -392,11 +408,8 @@ function AddBusiness() {
                           },
                         })}
                       />
-                      {errors.fssai_license && (
-                        <p className="text-danger">
-                          {" "}
-                          * {errors.fssai_license.message}
-                        </p>
+                      {errors.fssai && (
+                        <p className="text-danger"> * {errors.fssai.message}</p>
                       )}
                     </div>
                   </div>
@@ -406,7 +419,7 @@ function AddBusiness() {
                         type="file"
                         accept="image/*"
                         label="PAN"
-                        {...register("pan", {
+                        {...register("pancard", {
                           required: "PAN is required",
                           validate: {
                             fileSize: (fileList) => {
@@ -421,8 +434,11 @@ function AddBusiness() {
                           },
                         })}
                       />
-                      {errors.pan && (
-                        <p className="text-danger"> * {errors.pan.message}</p>
+                      {errors.pancard && (
+                        <p className="text-danger">
+                          {" "}
+                          * {errors.pancard.message}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -490,17 +506,10 @@ function AddBusiness() {
             </div>
           </div>
         </div>
+        <Loader start={loading} />
       </div>
-      {/* <Toaster position="top-center" reverseOrder={false} /> */}
     </>
   );
 }
 
 export default AddBusiness;
-
-{
-  /* <div class="m-0">
-  <label class="form-label">Textarea</label>
-  <textarea class="form-control" rows="3"></textarea>
-</div>; */
-}
