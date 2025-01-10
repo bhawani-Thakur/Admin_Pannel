@@ -21,8 +21,10 @@ function AddBusiness() {
   } = useForm();
 
   const token = localStorage.getItem("token");
-  
+
   const submit = (data) => {
+    console.log(data);
+    console.log(Object.keys(data));
     setLoading(true);
     const loaderTimeout = new Promise((resolve) => {
       setTimeout(() => {
@@ -44,6 +46,8 @@ function AddBusiness() {
     });
 
     formData.append("userid", user._id);
+
+    console.log("formData" , formData);
 
     const baseUrl = `${import.meta.env.VITE_SERVER_URI}${ADD_BUSINESS}`;
     const backendCall = handleFormSubmit(baseUrl, formData, token, "POST")

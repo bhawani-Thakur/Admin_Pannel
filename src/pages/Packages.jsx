@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 const Packages = () => {
   const roles = useSelector((state) => state.root.user?.roles);
-
+  console.log(roles);
   const {
     register,
     handleSubmit,
@@ -35,8 +35,8 @@ const Packages = () => {
                 <h6 className="fw-semibold"> Create a package</h6>
               </div>
               <hr className="my-1" />
-              <div className="row">
-                <div className="col-md-3 col-sm-12">
+              <div className="row d-flex  align-items-center ">
+                <div className="col-md-3 col-sm-12 ">
                   <div className="input-group mb-1">
                     <Input
                       type="text"
@@ -106,8 +106,6 @@ const Packages = () => {
                 </div>
               </div>
             </form>
-
-            <div className="row"></div>
           </div>
         </div>
       </div>

@@ -24,12 +24,11 @@ function AddUser() {
   } = useForm();
 
   useEffect(() => {
-    getAllRolesApi().then((res) =>
-      dispatch(() => {
-        setRole(res.data);
-      })
-    );
-  });
+    getAllRolesApi().then((res) => {
+      // console.log(res);
+      dispatch(setRole(res.data));
+    });
+  }, []);
 
   const submit = (data) => {
     setLoading(true);

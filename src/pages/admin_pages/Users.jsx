@@ -73,7 +73,7 @@ function Users() {
     },
 
     {
-      header: "Business/Vendor",
+      header: " Add Business",
       accessorKey: "",
       cell: ({ row }) => {
         if (row.original.role_name === "User") {
@@ -85,12 +85,25 @@ function Users() {
           <Link
             to={"/admin/businesses/add-business"}
             state={{ user: row.original }}
-            className="btn btn-sm btn-primary text-center"
+            className="btn btn-sm btn-primary text-center  ms-4"
+            title="Add Business"
           >
-            Add Business <i className="bi bi-building-fill"></i>
+            <i className="bi bi-building-add fs-5"></i>
           </Link>
         );
       },
+    },
+    {
+      header: "Owned Business",
+      accessorKey: "",
+      cell: ({ row }) => (
+        <Link
+          className="btn btn-sm btn-warning text-white ms-3"
+          title="Business List"
+        >
+          View
+        </Link>
+      ),
     },
   ];
   // Used Inside Modal OnChange to get Value.

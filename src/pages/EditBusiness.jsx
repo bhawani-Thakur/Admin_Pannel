@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input, Loader, Select } from "../components";
+import { Button, Input, Loader} from "../components";
 import { handleFormSubmit } from "../utils/apiHelper";
 import { Link, useLocation } from "react-router-dom";
-import { ADD_BUSINESS } from "../constants/constants";
+import { UPDATE_BUSINESS } from "../constants/constants";
 
 const EditBusiness = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const { business } = location?.state || {};
-  console.log("THE Business", business);
-
+  // console.log("THE Business", business);
   // console.log("User in Add Business", user._id);
 
   const {
@@ -26,23 +25,33 @@ const EditBusiness = () => {
 
   const submit = (data) => {
     setLoading(true);
-    console.log("Data", data);
+    console.log("All form Data", data);
+
+    const updatedData = Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => {
+        if (value instanceof FileList) {
+          return;
+        }
+        return value !== business[key];
+      })
+    );
+    // console.log("Update Only Fileds", updatedData);
+
     const loaderTimeout = new Promise((resolve) => {
       setTimeout(() => {
         resolve();
       }, 3000); // 3 seconds loader timeout
     });
-    const businessData = { userid: business._id, ...data };
+    const businessData = { id: business._id, fieldsToUpdate: updatedData };
     console.log("User Data", businessData);
-    const baseUrl = `${import.meta.env.VITE_SERVER_URI}${ADD_BUSINESS}`;
-    const backendCall = handleFormSubmit(baseUrl, businessData, token, "POST")
-      .then((res) => console.log(res))
+    const baseUrl = `${import.meta.env.VITE_SERVER_URI}${UPDATE_BUSINESS}`;
+    const backendCall = handleFormSubmit(baseUrl, businessData, token, "PUT")
+      .then((res) => console.log(res.data))
       .catch((error) => {
         setError(error.response.data.message);
-        console.log(error);
       });
     Promise.all([loaderTimeout, backendCall]).finally(() => setLoading(false));
-    // reset();
+    reset();
   };
 
   return (
@@ -60,7 +69,9 @@ const EditBusiness = () => {
           <div className="col my-1 shadow px-3 mb-5 rounded py-3" id="content">
             <div className="container">
               <form onSubmit={handleSubmit(submit)}>
-                {error && <p className="text-danger">{error}</p>}
+                {error && (
+                  <p className="text-danger text-center fs-5">{error}</p>
+                )}
 
                 <div className="row my-0 py-0">
                   <h5 className="fw-semibold">Company Contact Information</h5>

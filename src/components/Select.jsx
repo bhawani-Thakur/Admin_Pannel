@@ -4,8 +4,8 @@ function Select({ label, className = "", options = [], ...props }, ref) {
   const id = useId();
 
   return (
-    <div className="mb-3 w-100 m-1">
-      <label className="form-label">{label}</label>
+    <div className="mb-3 w-100">
+      <label className="form-label" htmlFor={id}>{label}</label>
       <select
         className={`form-select ${className}`}
         ref={ref}

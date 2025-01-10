@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Sidebar({  }) {
+function Sidebar({}) {
   return (
     <div className="d-flex">
       <nav id="sidebar" className="sidebar-wrapper">
@@ -67,7 +67,7 @@ function Sidebar({  }) {
 
             <li>
               <Link to="/admin/businesses">
-                <i className="bi bi-columns-gap"></i>
+                <i className="bi bi-shop"></i>
                 <span className="menu-text">Businesses</span>
               </Link>
             </li>
@@ -75,6 +75,12 @@ function Sidebar({  }) {
               <Link to="/admin/packages">
                 <i className="bi bi-gift-fill"></i>
                 <span className="menu-text">Packages</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/admin/roles">
+              <i className="bi bi-person-fill-gear"></i>
+                <span className="menu-text">Admin Role</span>
               </Link>
             </li>
 

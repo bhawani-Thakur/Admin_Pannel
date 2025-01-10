@@ -11,6 +11,7 @@ import Businesses from "./Businesses";
 import AddBusiness from "./AddBusiness";
 import Packages from "./Packages";
 import EditBusiness from "./EditBusiness";
+import AddAdminRoles from "./AddAdminRoles";
 
 export {
   AdminSignup,
@@ -26,4 +27,5 @@ export {
   AddBusiness,
   Packages,
   EditBusiness,
+  AddAdminRoles,
 };

@@ -10,6 +10,7 @@ import Header from "./Header";
 import SelectInput from "./comp/StatusSelect";
 import Loader from "./Loader";
 import Modal from "./Modal";
+import Checkbox from "./Checkbox";
 
 export {
   Input,
@@ -24,4 +25,5 @@ export {
   SelectInput,
   Loader,
   Modal,
+  Checkbox,
 };
